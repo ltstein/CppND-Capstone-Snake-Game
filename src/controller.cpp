@@ -1,18 +1,18 @@
 #include "controller.h"
 #include "SDL.h"
-#include "snake.h"
+#include "bug.h"
 #include <chrono>
 #include <iostream>
 #include <thread>
 
-void Controller::ChangeDirection(Snake &snake, Snake::Direction input,
-                                 Snake::Direction opposite) const {
-  if (snake.direction != opposite || snake.size == 1)
-    snake.direction = input;
+void Controller::ChangeDirection(Bug &bug, Bug::Direction input,
+                                 Bug::Direction opposite) const {
+  if (bug.direction != opposite || bug.size == 1)
+    bug.direction = input;
   return;
 }
 
-void Controller::HandleInput(bool &running, Snake &snake) const {
+void Controller::HandleInput(bool &running, Bug &bug) const {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {
@@ -20,44 +20,44 @@ void Controller::HandleInput(bool &running, Snake &snake) const {
     } else if (e.type == SDL_KEYDOWN) {
       switch (e.key.keysym.sym) {
       case SDLK_UP:
-        ChangeDirection(snake, Snake::Direction::kUp, Snake::Direction::kDown);
+        ChangeDirection(bug, Bug::Direction::kUp, Bug::Direction::kDown);
         break;
 
       case SDLK_DOWN:
-        ChangeDirection(snake, Snake::Direction::kDown, Snake::Direction::kUp);
+        ChangeDirection(bug, Bug::Direction::kDown, Bug::Direction::kUp);
         break;
 
       case SDLK_LEFT:
-        ChangeDirection(snake, Snake::Direction::kLeft,
-                        Snake::Direction::kRight);
+        ChangeDirection(bug, Bug::Direction::kLeft,
+                        Bug::Direction::kRight);
         break;
 
       case SDLK_RIGHT:
-        ChangeDirection(snake, Snake::Direction::kRight,
-                        Snake::Direction::kLeft);
+        ChangeDirection(bug, Bug::Direction::kRight,
+                        Bug::Direction::kLeft);
         break;
       }
     }
   }
 }
 
-void Controller::navigate(Snake &snake, int move) const {
-  Snake::Direction dir = (Snake::Direction)move;
+void Controller::navigate(Bug &bug, int move) const {
+  Bug::Direction dir = (Bug::Direction)move;
   switch (dir) {
-  case Snake::Direction::kUp:
-    ChangeDirection(snake, Snake::Direction::kUp, Snake::Direction::kDown);
+  case Bug::Direction::kUp:
+    ChangeDirection(bug, Bug::Direction::kUp, Bug::Direction::kDown);
     break;
 
-  case Snake::Direction::kDown:
-    ChangeDirection(snake, Snake::Direction::kDown, Snake::Direction::kUp);
+  case Bug::Direction::kDown:
+    ChangeDirection(bug, Bug::Direction::kDown, Bug::Direction::kUp);
     break;
 
-  case Snake::Direction::kLeft:
-    ChangeDirection(snake, Snake::Direction::kLeft, Snake::Direction::kRight);
+  case Bug::Direction::kLeft:
+    ChangeDirection(bug, Bug::Direction::kLeft, Bug::Direction::kRight);
     break;
 
-  case Snake::Direction::kRight:
-    ChangeDirection(snake, Snake::Direction::kRight, Snake::Direction::kLeft);
+  case Bug::Direction::kRight:
+    ChangeDirection(bug, Bug::Direction::kRight, Bug::Direction::kLeft);
     break;
   }
 }

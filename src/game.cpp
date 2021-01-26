@@ -6,7 +6,7 @@
 #include <iostream>
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
-    : snake(grid_width, grid_height), engine(dev()),
+    : bug(grid_width, grid_height), engine(dev()),
       random_w(0, static_cast<int>(grid_width-1)),
       random_h(0, static_cast<int>(grid_height-1)) {
   PlaceFood();
@@ -61,10 +61,10 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   //   std::cout << "\n";
   // }
 
-  // snake.FindMovesFromPath(planner.m_Model.path);
+  // bug.FindMovesFromPath(planner.m_Model.path);
 
-  // for (int i = 0; i < snake.moves.size(); i++) {
-  //   std::cout << (int)snake.moves[i] << " ";
+  // for (int i = 0; i < bug.moves.size(); i++) {
+  //   std::cout << (int)bug.moves[i] << " ";
   //   std::cout << "\n";
   // }
 
@@ -73,7 +73,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snake);
+    controller.HandleInput(running, bug);
 
     long timeSinceLastUpdate =
         std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -81,7 +81,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
             .count();
 
     Update();
-    renderer.Render(snake, food);
+    renderer.Render(bug, food);
 
     frame_end = SDL_GetTicks();
 
@@ -111,36 +111,36 @@ void Game::PlaceFood() {
   while (true) {
     x = random_w(engine);
     y = random_h(engine);
-    // Check that the location is not occupied by a snake item before placing
+    // Check that the location is not occupied by a bug item before placing
     // food.
-    if (!snake.SnakeCell(x, y)) {
+    if (!bug.BugCell(x, y)) {
       food.x = x;
       food.y = y;
-      snake.food = food;
+      bug.food = food;
       return;
     }
   }
 }
 
 void Game::Update() {
-  if (!snake.alive)
+  if (!bug.alive)
     return;
 
-  snake.Update();
+  bug.Update();
 
-  int new_x = static_cast<int>(snake.head_x);
-  int new_y = static_cast<int>(snake.head_y);
+  int new_x = static_cast<int>(bug.head_x);
+  int new_y = static_cast<int>(bug.head_y);
 
   // Check if there's food over here
   if (food.x == new_x && food.y == new_y) {
     score++;
     PlaceFood();
-    // Grow snake and increase speed.
-    // snake.GrowBody();
-    snake.speed += 0.02;
+    // Grow bug and increase speed.
+    // bug.GrowBody();
+    bug.speed += 0.02;
   }
 }
 
 int Game::GetScore() const { return score; }
-int Game::GetSize() const { return snake.size; }
+int Game::GetSize() const { return bug.size; }
 SDL_Point Game::GetFood() const { return food; }

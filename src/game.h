@@ -5,7 +5,7 @@
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
-#include "snake.h"
+#include "bug.h"
 
 class Game {
  public:
@@ -17,7 +17,7 @@ class Game {
   SDL_Point GetFood() const;
 
  private:
-  Snake snake;
+  Bug bug;
   SDL_Point food;
 
   std::random_device dev;

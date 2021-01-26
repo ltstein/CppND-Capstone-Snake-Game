@@ -5,11 +5,11 @@
 #include "planner.h"
 #include <vector>
 
-class Snake {
+class Bug {
 public:
   enum class Direction { kUp, kDown, kLeft, kRight };
 
-  Snake(int grid_width, int grid_height)
+  Bug(int grid_width, int grid_height)
       : grid_width(grid_width), grid_height(grid_height),
         head_x(grid_width / 2), head_y(grid_height / 2),
         route(grid_width, grid_height),
@@ -20,7 +20,7 @@ public:
 
   void Update();
   void GrowBody();
-  bool SnakeCell(int x, int y);
+  bool BugCell(int x, int y);
 
   void FindMovesFromPath(std::vector<Route::Node> path);
 
