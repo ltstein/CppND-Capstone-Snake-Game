@@ -44,7 +44,8 @@ For notes on rubric points see [here](rubric.md)
 ## Planned Extensions
 - [ ] Implement visualization of path planning
 - [ ] Implement obstacles
-  
+- [ ] Clean up dead code
+- [ ] Implement thread for logging/std out
 
 Based on Udacity C++ Nanodegree Snake Game
 # CPPND: Capstone Snake Game Example
