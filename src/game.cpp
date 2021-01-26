@@ -1,12 +1,14 @@
 #include "game.h"
-#include <iostream>
 #include "SDL.h"
+#include "planner.h"
+#include "route.h"
+#include <future>
+#include <iostream>
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
-    : snake(grid_width, grid_height),
-      engine(dev()),
-      random_w(0, static_cast<int>(grid_width)),
-      random_h(0, static_cast<int>(grid_height)) {
+    : snake(grid_width, grid_height), engine(dev()),
+      random_w(0, static_cast<int>(grid_width-1)),
+      random_h(0, static_cast<int>(grid_height-1)) {
   PlaceFood();
 }
 
@@ -19,11 +21,65 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   int frame_count = 0;
   bool running = true;
 
+  std::chrono::time_point<std::chrono::system_clock> lastUpdate;
+  lastUpdate = std::chrono::system_clock::now();
+
+  int w_center = 32 / 2;
+  int h_center = 32 / 2;
+  SDL_Point tc = {w_center, h_center - 10};
+  SDL_Point tr = {w_center + 10, h_center - 10};
+  SDL_Point br = {w_center + 10, h_center};
+  SDL_Point bc = {w_center, h_center};
+
+  // std::cout << " tc " << tc.x << ":" << tc.y << "\n";
+  // std::cout << " tr " << tr.x << ":" << tr.y << "\n";
+  // std::cout << " br " << br.x << ":" << br.y << "\n";
+  // std::cout << " bc " << bc.x << ":" << bc.y << "\n";
+
+  // std::vector<int> path{0, 2, 0, 3, 0, 4, 0, 1, 0, 2, 4, 0, 1, 0, 3, 0};
+  // std::vector<int> turns{4, 2, 3, 1};
+  // std::vector<SDL_Point> points{tc, tr, br, bc};
+
+  // Route route{32, 32};
+  // route.MakeNodes();
+  // Planner planner{route, 16, 16, 27, 23};
+
+  // planner.AStarSearch();
+
+  // Print out all nodes
+  // for (int i = 0; i < route.m_Nodes.size(); i++) {
+  //       for (int j = 0; j < route.m_Nodes[i].size(); j++)
+  //           std::cout << "(" << i << ":" << j << ")" << route.m_Nodes[i][j].x
+  //           << ":" << route.m_Nodes[i][j].y << " ";
+  //       std::cout << "\n";
+  //   }
+
+  // for (int i = 0; i < planner.m_Model.path.size(); i++) {
+  //   std::cout << planner.m_Model.path[i].x << ":" <<
+  //   planner.m_Model.path[i].y
+  //             << " ";
+  //   std::cout << "\n";
+  // }
+
+  // snake.FindMovesFromPath(planner.m_Model.path);
+
+  // for (int i = 0; i < snake.moves.size(); i++) {
+  //   std::cout << (int)snake.moves[i] << " ";
+  //   std::cout << "\n";
+  // }
+
+  int move = 0;
   while (running) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, snake);
+
+    long timeSinceLastUpdate =
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now() - lastUpdate)
+            .count();
+
     Update();
     renderer.Render(snake, food);
 
@@ -60,13 +116,15 @@ void Game::PlaceFood() {
     if (!snake.SnakeCell(x, y)) {
       food.x = x;
       food.y = y;
+      snake.food = food;
       return;
     }
   }
 }
 
 void Game::Update() {
-  if (!snake.alive) return;
+  if (!snake.alive)
+    return;
 
   snake.Update();
 
@@ -78,10 +136,11 @@ void Game::Update() {
     score++;
     PlaceFood();
     // Grow snake and increase speed.
-    snake.GrowBody();
+    // snake.GrowBody();
     snake.speed += 0.02;
   }
 }
 
 int Game::GetScore() const { return score; }
 int Game::GetSize() const { return snake.size; }
+SDL_Point Game::GetFood() const { return food; }
